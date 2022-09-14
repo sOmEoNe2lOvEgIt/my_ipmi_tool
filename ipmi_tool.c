@@ -204,6 +204,7 @@ void log_parsed_sel(linked_list_t *gathered_sel)
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg_type);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg);
             printf(((parsed_sel_t *)gathered_sel->data)->asserted? "asserted\n" : "deasserted\n");
+            printf("__________________________________\n");
 		} else
 			printf("no worth logs gathered");
 		gathered_sel = gathered_sel->next;
