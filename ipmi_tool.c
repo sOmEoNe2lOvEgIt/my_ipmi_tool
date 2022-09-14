@@ -169,12 +169,20 @@ linked_list_t *gather_sel_logs
         printf("%s\n\n", curr_log->unparsed_sel);
         if (!handle_sel_time(curr_log, job_info->start_time))
             continue;
+        else
+            printf("time ok\n");
         if (!handle_sel_type(curr_log))
             continue;
+        else
+            printf("type ok\n");
         if (!handle_sel_msg(curr_log))
             continue;
+        else
+            printf("msg ok\n");
         if (!handle_sel_assert(curr_log))
             continue;
+        else
+            printf("assert ok\n");
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
     pclose(log_file);
