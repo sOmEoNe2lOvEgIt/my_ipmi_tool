@@ -4,6 +4,17 @@
 #include <string.h>
 #include "ipmi_tool.h"
 
+bool is_log_empty(char *log)
+{
+    if (log == NULL)
+        return (true);
+    if (strlen(log) == 0 || strcmp(log, "\n") == 0) {
+        free(log);
+        return (true);
+    }
+    return (false);
+}
+
 parsed_sel_t *init_parsed_sel(void)
 {
     parsed_sel_t *parsed_sel = malloc(sizeof(parsed_sel_t));
