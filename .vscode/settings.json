@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "slurm.h": "c",
+        "ipmi_tool.h": "c",
+        "stdlib.h": "c"
+    }
+}
