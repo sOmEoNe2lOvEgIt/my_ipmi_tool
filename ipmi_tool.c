@@ -36,9 +36,10 @@ linked_list_t *add_to_list(linked_list_t *list, void *data)
 int handle_sel_assert(parsed_sel_t *curr_sel)
 {
     int i = 0;
+    int j = 0;
     int len = 0;
 
-    for (int j = 0; j < 4; j++)
+    for (; j < 4; j++)
         for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
@@ -96,9 +97,10 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
 int handle_sel_type(parsed_sel_t *curr_sel)
 {
     int i = 0;
+    int j = 0;
     int len = 0;
 
-    for (int j = 0; j < 2; j++)
+    for (; j < 2; j++)
         for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
@@ -112,9 +114,10 @@ int handle_sel_type(parsed_sel_t *curr_sel)
 int handle_sel_msg(parsed_sel_t *curr_sel)
 {
     int i = 0;
+    int j = 0;
     int len = 0;
 
-    for (int j = 0; j < 3; j++)
+    for (; j < 3; j++)
         for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
