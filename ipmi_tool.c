@@ -63,7 +63,6 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    printf("%s", &curr_sel->unparsed_sel[i]);
     if (strncmp(&curr_sel->unparsed_sel[i], "Asserted", 8) == 0)
         curr_sel->asserted = true;
     else
@@ -166,7 +165,7 @@ void log_parsed_sel(linked_list_t *gathered_sel)
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_time_str);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg_type);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg);
-            printf(((parsed_sel_t *)gathered_sel->data)->asserted? "asserted\n" : "deasserted\n");
+            printf(((parsed_sel_t *)gathered_sel->data)->asserted? "Asserted\n" : "Deasserted\n");
             printf("_____________________________________________\n");
 		}
 		gathered_sel = gathered_sel->next;
