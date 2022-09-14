@@ -57,15 +57,13 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
 {
     int i = 0;
     int j = 0;
-    int len = 0;
 
     for (; j < 4; j++)
-        for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
+        i += len_untill(curr_sel->sel_msg + i, '|') + 1;
+    i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    i += 2;
-    for (; curr_sel->unparsed_sel[i] != '\0'; i++, len++);
-    if (strstr(&curr_sel->unparsed_sel[i - len], "Asserted") != NULL)
+    if (strstr(&(curr_sel->unparsed_sel[i]), "Asserted") != NULL)
         curr_sel->asserted = true;
     else
         curr_sel->asserted = false;
@@ -102,51 +100,52 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     sel_time->tm_sec = atoi(&curr_sel->unparsed_sel[i]);
-    sprintf(time_str, "[%d-%02d-%02dT%02d:%02d:%02d]", sel_time->tm_year, sel_time->tm_mon, sel_time->tm_mday, sel_time->tm_hour, sel_time->tm_min, sel_time->tm_sec);
+    sprintf(time_str, "[%d-%02d-%02dT%02d:%02d:%02d]",
+    sel_time->tm_year, sel_time->tm_mon, sel_time->tm_mday,
+    sel_time->tm_hour, sel_time->tm_min, sel_time->tm_sec);
     curr_sel->sel_time_str = strdup(time_str);
     free(sel_time);
     return (0);
 }
 
-int handle_sel_str(parsed_sel_t *curr_sel, char **sel_str, int element)
+int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
 {
     int i = 0;
     int len = 0;
 
-    for (; element > 0 ; element--)
+    for (; element_nb > 0 ; element_nb--)
         i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
-    (*sel_str) = strndup(&curr_sel->unparsed_sel[i - len], len);
+    (*element) = strndup(&curr_sel->unparsed_sel[i - len], len);
     return (0);
 }
 
-linked_list_t *gather_sel
-(job_id_info_t *job_info)
+linked_list_t *gather_sel(job_id_info_t *job_info)
 {
     linked_list_t *sel_list = NULL;
-    FILE *log_fd = NULL;
     parsed_sel_t *curr_log = NULL;
+    FILE *log_fd = NULL;
     char *buffer = NULL;
     size_t len = 1000;
 
     if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
-    sel_list = add_to_list(sel_list, init_parsed_sel());
+    sel_list = add_to_list(sel_list, init_parsed_sel);
     while (getline(&buffer, &len, log_fd) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
         if (handle_sel_time(curr_log, job_info->start_time))
             continue;
-        if (handle_sel_str(curr_log, &curr_log->sel_msg_type, 3))
+        if (get_sel_element(curr_log, &curr_log->sel_msg_type, 3))
             continue;
-        if (handle_sel_str(curr_log, &curr_log->sel_msg, 4))
+        if (get_sel_element(curr_log, &curr_log->sel_msg, 4))
             continue;
         if (handle_sel_assert(curr_log))
             continue;
-        sel_list = add_to_list(sel_list, init_parsed_sel());
+        sel_list = add_to_list(sel_list, init_parsed_sel);
     }
     pclose(log_fd);
     return (sel_list);
@@ -167,9 +166,8 @@ void log_parsed_sel(linked_list_t *gathered_sel)
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg_type);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg);
             printf(((parsed_sel_t *)gathered_sel->data)->asserted? "asserted\n" : "deasserted\n");
-            printf("__________________________________\n");
-		} else
-			printf("no worth logs gathered");
+            printf("_____________________________________________\n");
+		}
 		gathered_sel = gathered_sel->next;
 	}
 }
