@@ -221,6 +221,6 @@ int main (int ac, char **av)
     sel_list = gather_sel(job_info);
     if (sel_list == NULL)
         return (1);
-    // log_parsed_sel(sel_list);
+    log_parsed_sel(sel_list);
     return (0);
 }
