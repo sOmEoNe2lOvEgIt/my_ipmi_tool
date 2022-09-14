@@ -186,6 +186,10 @@ void log_parsed_sel(linked_list_t *gathered_sel)
 	while (gathered_sel != NULL) {
     	if (gathered_sel != NULL && !is_log_empty(((parsed_sel_t *)gathered_sel->data)->unparsed_sel)) {
 			printf(((parsed_sel_t *)gathered_sel->data)->unparsed_sel);
+            printf(((parsed_sel_t *)gathered_sel->data)->sel_time_str);
+            printf(((parsed_sel_t *)gathered_sel->data)->sel_msg_type);
+            printf(((parsed_sel_t *)gathered_sel->data)->sel_msg);
+            printf(((parsed_sel_t *)gathered_sel->data)->asserted? "asserted" : "deasserted");
 		} else
 			printf("no worth logs gathered");
 		gathered_sel = gathered_sel->next;
