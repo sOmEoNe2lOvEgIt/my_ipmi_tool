@@ -63,7 +63,7 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    if (strstr(&(curr_sel->unparsed_sel[i]), "Asserted") != NULL)
+    if (strncmp(&(curr_sel->unparsed_sel[i]), "Asserted", 9) == 0)
         curr_sel->asserted = true;
     else
         curr_sel->asserted = false;
