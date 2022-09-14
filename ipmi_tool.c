@@ -111,17 +111,16 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
 int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
 {
     int i = 0;
-    int j = 0;
     int len = 0;
 
-    for (; j < element; j++, i++)
-        i += len_untill(&curr_sel->unparsed_sel[i], '|');
+    for (; element > 0 ; element--)
+        i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
+    i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     (*sel_str) = strndup(&curr_sel->unparsed_sel[i - len], len);
-    (*sel_str)[len]  = '\0';
+    // (*sel_str)[len]  = '\0';
     return (0);
 }
 
