@@ -125,25 +125,6 @@ int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
     return (0);
 }
 
-int handle_sel_msg(parsed_sel_t *curr_sel)
-{
-    int i = 0;
-    int j = 0;
-    int len = 0;
-
-    for (; j < 4; j++, i++)
-        i += len_untill(&curr_sel->unparsed_sel[i], '|');
-    if (curr_sel->unparsed_sel[i] == '\0')
-        return (1);
-    i++;
-    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
-    if (curr_sel->unparsed_sel[i] == '\0')
-        return (1);
-    curr_sel->sel_msg = strndup(&curr_sel->unparsed_sel[i - len], len);
-    curr_sel->sel_msg[len] = '\0';
-    return (0);
-}
-
 linked_list_t *gather_sel_logs
 (job_id_info_t *job_info, linked_list_t *sel_list)
 {
@@ -163,11 +144,11 @@ linked_list_t *gather_sel_logs
             continue;
         else
             printf("time ok, ");
-        if (handle_sel_str(curr_log, 2, &curr_log->sel_msg_type))
+        if (handle_sel_str(curr_log, 3, &curr_log->sel_msg_type))
             continue;
         else
             printf("type ok, ");
-        if (handle_sel_str(curr_log, 3, &curr_log->sel_msg))
+        if (handle_sel_str(curr_log, 4, &curr_log->sel_msg))
             continue;
         else
             printf("msg ok, ");
