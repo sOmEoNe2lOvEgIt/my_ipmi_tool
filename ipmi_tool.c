@@ -58,17 +58,31 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     int i = 0;
     int j = 0;
 
-    for (; j < 4; j++, i++) {
-        i += len_untill(&curr_sel->sel_msg[i], '|');
-    }
+    for (; j < 4; j++)
+        i += len_untill(&curr_sel->sel_msg[i], '|') + 1;
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    printf(&curr_sel->unparsed_sel[i]);
+    printf("%s____%i\n", &curr_sel->unparsed_sel[i], i);
     if (strncmp(&(curr_sel->unparsed_sel[i]), "Asserted", 9) == 0)
         curr_sel->asserted = true;
     else
         curr_sel->asserted = false;
+    return (0);
+}
+
+int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
+{
+    int i = 0;
+    int len = 0;
+
+    for (; element_nb > 0 ; element_nb--)
+        i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
+    i++;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
+    (*element) = strndup(&curr_sel->unparsed_sel[i - len], len);
     return (0);
 }
 
@@ -107,21 +121,6 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     sel_time->tm_hour, sel_time->tm_min, sel_time->tm_sec);
     curr_sel->sel_time_str = strdup(time_str);
     free(sel_time);
-    return (0);
-}
-
-int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
-{
-    int i = 0;
-    int len = 0;
-
-    for (; element_nb > 0 ; element_nb--)
-        i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
-    i++;
-    if (curr_sel->unparsed_sel[i] == '\0')
-        return (1);
-    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
-    (*element) = strndup(&curr_sel->unparsed_sel[i - len], len);
     return (0);
 }
 
