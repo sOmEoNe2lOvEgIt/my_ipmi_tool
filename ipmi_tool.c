@@ -172,6 +172,21 @@ void log_parsed_sel(linked_list_t *gathered_sel)
 	}
 }
 
+void free_parsed_sel(parsed_sel_t *parsed_sel)
+{
+    if (parsed_sel == NULL)
+        return;
+    if (parsed_sel->unparsed_sel != NULL)
+        free(parsed_sel->unparsed_sel);
+    if (parsed_sel->sel_time_str != NULL)
+        free(parsed_sel->sel_time_str);
+    if (parsed_sel->sel_msg != NULL)
+        free(parsed_sel->sel_msg);
+    if (parsed_sel->sel_msg_type != NULL)
+        free(parsed_sel->sel_msg_type);
+    free(parsed_sel);
+}
+
 void free_sel_list(linked_list_t *sel_list)
 {
     parsed_sel_t *curr_sel = NULL;
