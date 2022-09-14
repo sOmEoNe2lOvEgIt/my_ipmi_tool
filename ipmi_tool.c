@@ -211,11 +211,14 @@ int main (int ac, char **av)
     linked_list_t *sel_list = NULL;
     time_t start_time = 0;
 
+    if (job_info == NULL)
+        return (1);
     job_info->start_time = start_time;
     sel_list = gather_sel(job_info);
     if (sel_list == NULL)
         return (1);
     log_parsed_sel(sel_list);
     free_sel_list(sel_list);
+    free(job_info);
     return (0);
 }
