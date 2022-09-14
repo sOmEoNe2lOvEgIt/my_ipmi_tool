@@ -51,7 +51,7 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     return (0);
 }
 
-int handle_sel_time(parsed_sel_t *curr_sel, demeter_conf_t *demeter_conf, time_t start_time)
+int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
 {
     int i = 0;
     struct tm *sel_time = malloc(sizeof(struct tm));
@@ -126,22 +126,20 @@ int handle_sel_msg(parsed_sel_t *curr_sel)
 }
 
 linked_list_t *gather_sel_logs
-(demeter_conf_t *demeter_conf, job_id_info_t *job_info, linked_list_t *sel_list)
+(job_id_info_t *job_info, linked_list_t *sel_list)
 {
     FILE *log_file = NULL;
     parsed_sel_t *curr_log = NULL;
     char *buffer = NULL;
     size_t len = 1000;
 
-    if ((log_file = fopen("/shared/bmc.sel.list.taranis1061", "r")) == NULL) {
-        // write_log_to_file(demeter_conf, "cannot exec the sel logs command", DEBUG, 3);
+    if ((log_file = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
-    }
     sel_list = add_to_list(sel_list, init_parsed_sel());
     while (getline(&buffer, &len, log_file) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
-        if (!handle_sel_time(curr_log, demeter_conf, job_info->start_time))
+        if (!handle_sel_time(curr_log, job_info->start_time))
             continue;
         if (!handle_sel_type(curr_log))
             continue;
@@ -151,19 +149,27 @@ linked_list_t *gather_sel_logs
             continue;
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
-    fclose(log_file);
+    pclose(log_file);
     return (sel_list);
 }
 
-linked_list_t *gather_sel(demeter_conf_t *demeter_conf, job_id_info_t *job_info, cgroup_data_t *cgroup_data)
+linked_list_t *gather_sel(job_id_info_t *job_info)
 {
     linked_list_t *sel_list = NULL;
 
-    sel_list = gather_sel_logs(demeter_conf, job_info, sel_list);
+    sel_list = gather_sel_logs(job_info, sel_list);
     return (sel_list);
 }
 
 int main (int ac, char **av)
 {
+    job_id_info_t *job_info = malloc(sizeof(job_id_info_t));
+    linked_list_t *sel_list = NULL;
+    time_t start_time = 0;
+
+    job_info->start_time = start_time;
+    sel_list = gather_sel(job_info);
+    if (sel_list == NULL)
+        return (1);
     return (0);
 }
