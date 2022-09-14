@@ -64,7 +64,7 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     printf("%s", &curr_sel->unparsed_sel[i]);
-    if (strncmp(&curr_sel->unparsed_sel[i], "Asserted", 9) == 0)
+    if (strncmp(&curr_sel->unparsed_sel[i], "Asserted", 8) == 0)
         curr_sel->asserted = true;
     else
         curr_sel->asserted = false;
