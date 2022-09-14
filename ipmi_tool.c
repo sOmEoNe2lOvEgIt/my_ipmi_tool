@@ -134,7 +134,7 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
     if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
     printf("Adding SELs to list");
-    sel_list = add_to_list(sel_list, init_parsed_sel);
+    sel_list = add_to_list(sel_list, init_parsed_sel());
     printf("Added to sel_list");
     while (getline(&buffer, &len, log_fd) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
@@ -156,7 +156,7 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
             continue;
         else
             printf("assert o.k. \n");
-        sel_list = add_to_list(sel_list, init_parsed_sel);
+        sel_list = add_to_list(sel_list, init_parsed_sel());
     }
     pclose(log_fd);
     return (sel_list);
