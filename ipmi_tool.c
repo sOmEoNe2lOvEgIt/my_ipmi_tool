@@ -125,10 +125,10 @@ int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
 
 linked_list_t *gather_sel(job_id_info_t *job_info)
 {
+    FILE *log_fd = NULL;
     linked_list_t *sel_list = NULL;
     parsed_sel_t *curr_log = NULL;
-    FILE *log_fd = NULL;
-    char *buffer;
+    char *buffer = NULL;
     size_t len = 1000;
 
     if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
