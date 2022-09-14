@@ -133,29 +133,19 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
 
     if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
-    printf("Adding SELs to list");
     sel_list = add_to_list(sel_list, init_parsed_sel());
-    printf("Added to sel_list");
     while (getline(&buffer, &len, log_fd) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
         printf("%s", curr_log->unparsed_sel);
         if (handle_sel_time(curr_log, job_info->start_time))
             continue;
-        else
-            printf("time o.k. ");
         if (get_sel_element(curr_log, &curr_log->sel_msg_type, 3))
             continue;
-        else
-            printf("type o.k. ");
         if (get_sel_element(curr_log, &curr_log->sel_msg, 4))
             continue;
-        else
-            printf("msg o.k. ");
         if (handle_sel_assert(curr_log))
             continue;
-        else
-            printf("assert o.k. \n");
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
     pclose(log_fd);
@@ -193,6 +183,6 @@ int main (int ac, char **av)
     sel_list = gather_sel(job_info);
     if (sel_list == NULL)
         return (1);
-    // log_parsed_sel(sel_list);
+    log_parsed_sel(sel_list);
     return (0);
 }
