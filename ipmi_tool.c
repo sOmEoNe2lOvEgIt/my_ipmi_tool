@@ -190,7 +190,9 @@ int main (int ac, char **av)
     time_t start_time = 0;
 
     job_info->start_time = start_time;
+    printf("start gathering sel\n");
     sel_list = gather_sel(job_info);
+    printf("end gathering sel\n");
     if (sel_list == NULL)
         return (1);
     // log_parsed_sel(sel_list);
