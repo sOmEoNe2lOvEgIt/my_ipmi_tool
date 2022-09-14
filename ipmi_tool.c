@@ -15,6 +15,15 @@ bool is_log_empty(char *log)
     return (false);
 }
 
+int len_untill(char *str, char c)
+{
+    int i = 0;
+
+    while (str[i] != c && str[i] != '\0')
+        i++;
+    return (i);
+}
+
 parsed_sel_t *init_parsed_sel(void)
 {
     parsed_sel_t *parsed_sel = malloc(sizeof(parsed_sel_t));
@@ -128,12 +137,8 @@ int handle_sel_msg(parsed_sel_t *curr_sel)
     int j = 0;
     int len = 0;
 
-    for (; j < 3; j++)
-        for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
-    if (curr_sel->unparsed_sel[i] == '\0')
-        return (1);
-    i++;
-    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
+    for (; j < 3; j++, i++)
+        i += len_untill(&curr_sel->unparsed_sel[i], '|');
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     i++;
