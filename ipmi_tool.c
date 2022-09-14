@@ -58,8 +58,8 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     int i = 0;
     int j = 0;
 
-    for (; j < 5; j++)
-        i += len_untill(&curr_sel->sel_msg[i], '|');
+    for (; j < 4; j++)
+        i += len_untill(&curr_sel->sel_msg[i], '|') + 1;
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
