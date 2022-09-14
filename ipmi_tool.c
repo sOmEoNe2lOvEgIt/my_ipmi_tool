@@ -135,7 +135,7 @@ int handle_sel_msg(parsed_sel_t *curr_sel)
     i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     if (curr_sel->unparsed_sel[i] == '\0')
-        return (1)
+        return (1);
     i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     if (curr_sel->unparsed_sel[i] == '\0')
