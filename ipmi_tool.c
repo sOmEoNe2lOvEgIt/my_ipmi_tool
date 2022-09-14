@@ -163,15 +163,15 @@ linked_list_t *gather_sel_logs
         if (handle_sel_time(curr_log, job_info->start_time))
             continue;
         else
-            printf("time ok\n");
+            printf("time ok, ");
         if (handle_sel_type(curr_log))
             continue;
         else
-            printf("type ok\n");
+            printf("type ok, ");
         if (handle_sel_msg(curr_log))
             continue;
         else
-            printf("msg ok\n");
+            printf("msg ok, ");
         if (handle_sel_assert(curr_log))
             continue;
         else
