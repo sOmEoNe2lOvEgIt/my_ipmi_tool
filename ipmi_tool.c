@@ -114,7 +114,7 @@ int handle_sel_type(parsed_sel_t *curr_sel)
     int j = 0;
     int len = 0;
 
-    for (; j < 3; j++)
+    for (; j < 3; j++, i++)
         i += len_untill(&curr_sel->unparsed_sel[i], '|');
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
