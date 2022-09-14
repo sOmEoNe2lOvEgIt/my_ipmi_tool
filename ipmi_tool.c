@@ -59,12 +59,12 @@ int handle_sel_assert(parsed_sel_t *curr_sel)
     int j = 0;
 
     for (; j < 5; j++)
-        i += len_untill(&curr_sel->sel_msg[i], '|') + 2;
+        i += len_untill(&curr_sel->sel_msg[i], '|') + 1;
     i++;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
-    printf("%s____%i\n", &(curr_sel->unparsed_sel[i]), i);
-    if (strncmp(&(curr_sel->unparsed_sel[i]), "Asserted", 9) == 0)
+    printf("%s", &curr_sel->unparsed_sel[i]);
+    if (strncmp(&curr_sel->unparsed_sel[i], "Asserted", 9) == 0)
         curr_sel->asserted = true;
     else
         curr_sel->asserted = false;
