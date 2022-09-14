@@ -53,7 +53,7 @@ linked_list_t *add_to_list(linked_list_t *list, void *data)
     return (new_link);
 }
 
-int handle_sel_assert(parsed_sel_t *curr_sel)
+int get_sel_assert(parsed_sel_t *curr_sel)
 {
     int i = 0;
     int j = 0;
@@ -85,7 +85,7 @@ int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
     return (0);
 }
 
-int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
+int get_sel_time(parsed_sel_t *curr_sel, time_t start_time)
 {
     int i = 0;
     struct tm *sel_time = malloc(sizeof(struct tm));
@@ -137,13 +137,13 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
     while (getline(&buffer, &len, log_fd) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
-        if (handle_sel_time(curr_log, job_info->start_time))
+        if (get_sel_time(curr_log, job_info->start_time))
             continue;
         if (get_sel_element(curr_log, &curr_log->sel_msg_type, 3))
             continue;
         if (get_sel_element(curr_log, &curr_log->sel_msg, 4))
             continue;
-        if (handle_sel_assert(curr_log))
+        if (get_sel_assert(curr_log))
             continue;
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
