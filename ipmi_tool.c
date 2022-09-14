@@ -121,7 +121,7 @@ int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
     i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     *sel_str = strndup(&curr_sel->unparsed_sel[i - len], len);
-    *sel_str  = '\0';
+    *sel_str[len]  = '\0';
     return (0);
 }
 
