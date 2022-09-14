@@ -108,7 +108,7 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     return (0);
 }
 
-int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
+int handle_sel_str(parsed_sel_t *curr_sel, char **sel_str, int element)
 {
     int i = 0;
     int len = 0;
@@ -120,7 +120,6 @@ int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
         return (1);
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     (*sel_str) = strndup(&curr_sel->unparsed_sel[i - len], len);
-    // (*sel_str)[len]  = '\0';
     return (0);
 }
 
@@ -128,37 +127,28 @@ linked_list_t *gather_sel
 (job_id_info_t *job_info)
 {
     linked_list_t *sel_list = NULL;
-    FILE *log_file = NULL;
+    FILE *log_fd = NULL;
     parsed_sel_t *curr_log = NULL;
     char *buffer = NULL;
     size_t len = 1000;
 
-    if ((log_file = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
+    if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
     sel_list = add_to_list(sel_list, init_parsed_sel());
-    while (getline(&buffer, &len, log_file) != -1) {
+    while (getline(&buffer, &len, log_fd) != -1) {
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
-        printf("%s", curr_log->unparsed_sel);
         if (handle_sel_time(curr_log, job_info->start_time))
             continue;
-        else
-            printf("time ok, ");
-        if (handle_sel_str(curr_log, 3, &curr_log->sel_msg_type))
+        if (handle_sel_str(curr_log, &curr_log->sel_msg_type, 3))
             continue;
-        else
-            printf("type ok, ");
-        if (handle_sel_str(curr_log, 4, &curr_log->sel_msg))
+        if (handle_sel_str(curr_log, &curr_log->sel_msg, 4))
             continue;
-        else
-            printf("msg ok, ");
         if (handle_sel_assert(curr_log))
             continue;
-        else
-            printf("assert ok\n\n");
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
-    pclose(log_file);
+    pclose(log_fd);
     return (sel_list);
 }
 
@@ -172,7 +162,7 @@ void log_parsed_sel(linked_list_t *gathered_sel)
 		gathered_sel = gathered_sel->next;
 	while (gathered_sel != NULL) {
     	if (gathered_sel != NULL && !is_log_empty(((parsed_sel_t *)gathered_sel->data)->unparsed_sel)) {
-			printf(((parsed_sel_t *)gathered_sel->data)->unparsed_sel);
+			// printf(((parsed_sel_t *)gathered_sel->data)->unparsed_sel);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_time_str);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg_type);
             printf("%s\n", ((parsed_sel_t *)gathered_sel->data)->sel_msg);
