@@ -125,9 +125,10 @@ int handle_sel_str(parsed_sel_t *curr_sel, int element, char **sel_str)
     return (0);
 }
 
-linked_list_t *gather_sel_logs
-(job_id_info_t *job_info, linked_list_t *sel_list)
+linked_list_t *gather_sel
+(job_id_info_t *job_info)
 {
+    linked_list_t *sel_list = NULL;
     FILE *log_file = NULL;
     parsed_sel_t *curr_log = NULL;
     char *buffer = NULL;
@@ -159,14 +160,6 @@ linked_list_t *gather_sel_logs
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
     pclose(log_file);
-    return (sel_list);
-}
-
-linked_list_t *gather_sel(job_id_info_t *job_info)
-{
-    linked_list_t *sel_list = NULL;
-
-    sel_list = gather_sel_logs(job_info, sel_list);
     return (sel_list);
 }
 
