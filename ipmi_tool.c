@@ -134,10 +134,15 @@ int handle_sel_msg(parsed_sel_t *curr_sel)
         return (1);
     i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1)
+    i++;
+    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
     len --;
     curr_sel->sel_msg = strndup(&curr_sel->unparsed_sel[i - len], len);
     curr_sel->sel_msg[len] = '\0';
-    printf(curr_sel->sel_msg);
     return (0);
 }
 
