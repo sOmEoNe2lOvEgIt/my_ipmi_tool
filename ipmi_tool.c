@@ -164,6 +164,23 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
     return (sel_list);
 }
 
+void log_parsed_sel(linked_list_t *gathered_sel)
+{
+	if (gathered_sel == NULL) {
+		printf("no logs gathered");
+		return;
+	}
+	while (gathered_sel->next != NULL && is_log_empty(((parsed_sel_t *)gathered_sel->data)->unparsed_sel))
+		gathered_sel = gathered_sel->next;
+	while (gathered_sel != NULL) {
+    	if (gathered_sel != NULL && !is_log_empty(((parsed_sel_t *)gathered_sel->data)->unparsed_sel)) {
+			printf(((parsed_sel_t *)gathered_sel->data)->unparsed_sel);
+		} else
+			printf("no worth logs gathered");
+		gathered_sel = gathered_sel->next;
+	}
+}
+
 int main (int ac, char **av)
 {
     job_id_info_t *job_info = malloc(sizeof(job_id_info_t));
@@ -174,5 +191,6 @@ int main (int ac, char **av)
     sel_list = gather_sel(job_info);
     if (sel_list == NULL)
         return (1);
+    log_parsed_sel(sel_list);
     return (0);
 }
