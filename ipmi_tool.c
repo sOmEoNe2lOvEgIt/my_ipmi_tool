@@ -115,13 +115,13 @@ int handle_sel_type(parsed_sel_t *curr_sel)
     int len = 0;
 
     for (; j < 3; j++)
-        for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++);
+        i += len_untill(&curr_sel->unparsed_sel[i], '|');
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     i++;
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
-    len --;
     curr_sel->sel_msg_type = strndup(&curr_sel->unparsed_sel[i - len], len);
+    curr_sel->sel_msg_type[len] = '\0';
     return (0);
 }
 
