@@ -148,6 +148,7 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
         sel_list = add_to_list(sel_list, init_parsed_sel());
     }
     pclose(log_fd);
+    free(buffer);
     return (sel_list);
 }
 
