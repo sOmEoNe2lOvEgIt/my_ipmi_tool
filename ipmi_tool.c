@@ -131,6 +131,7 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
     char *buffer = NULL;
     size_t len = 1000;
 
+    printf("ipmitool call\n");
     if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
         return (NULL);
     else
