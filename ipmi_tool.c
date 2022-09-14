@@ -53,9 +53,103 @@ linked_list_t *add_to_list(linked_list_t *list, void *data)
     return (new_link);
 }
 
+int get_sel_assert(parsed_sel_t *curr_sel)
+{
+    int i = 0;
+    int j = 0;
 
+    for (; j < 5; j++)
+        i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
+    i++;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    if (strncmp(&curr_sel->unparsed_sel[i], "Asserted", 8) == 0)
+        curr_sel->asserted = true;
+    else
+        curr_sel->asserted = false;
+    return (0);
+}
 
+int get_sel_element(parsed_sel_t *curr_sel, char **element, int element_nb)
+{
+    int i = 0;
+    int len = 0;
 
+    for (; element_nb > 0 ; element_nb--)
+        i += len_untill(&curr_sel->unparsed_sel[i], '|') + 1;
+    i++;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
+    (*element) = strndup(&curr_sel->unparsed_sel[i - len], len);
+    return (0);
+}
+
+int get_sel_time(parsed_sel_t *curr_sel, time_t start_time)
+{
+    int i = 0;
+    struct tm *sel_time = malloc(sizeof(struct tm));
+    char time_str[80];
+
+    i += len_untill(&curr_sel->unparsed_sel[i], '|') + 2;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_mday = atoi(&curr_sel->unparsed_sel[i]);
+    i += len_untill(&curr_sel->unparsed_sel[i], '/') + 1;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_mon = atoi(&curr_sel->unparsed_sel[i]);
+    i += len_untill(&curr_sel->unparsed_sel[i], '/') + 1;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_year = atoi(&curr_sel->unparsed_sel[i]);
+    i += len_untill(&curr_sel->unparsed_sel[i], '|') + 2;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_hour = atoi(&curr_sel->unparsed_sel[i]);
+    i += len_untill(&curr_sel->unparsed_sel[i], ':') + 1;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_min = atoi(&curr_sel->unparsed_sel[i]);
+    i += len_untill(&curr_sel->unparsed_sel[i], ':') + 1;
+    if (curr_sel->unparsed_sel[i] == '\0')
+        return (1);
+    sel_time->tm_sec = atoi(&curr_sel->unparsed_sel[i]);
+    sprintf(time_str, "[%d-%02d-%02dT%02d:%02d:%02d]",
+    sel_time->tm_year, sel_time->tm_mon, sel_time->tm_mday,
+    sel_time->tm_hour, sel_time->tm_min, sel_time->tm_sec);
+    curr_sel->sel_time_str = strdup(time_str);
+    free(sel_time);
+    return (0);
+}
+
+linked_list_t *gather_sel(job_id_info_t *job_info)
+{
+    FILE *log_fd = NULL;
+    linked_list_t *sel_list = NULL;
+    parsed_sel_t *curr_log = NULL;
+    char *buffer = NULL;
+    size_t len = 1000;
+
+    if ((log_fd = popen("ipmitool -U admin -P password sel list", "r")) == NULL)
+        return (NULL);
+    sel_list = add_to_list(sel_list, init_parsed_sel());
+    while (getline(&buffer, &len, log_fd) != -1) {
+        curr_log = (parsed_sel_t *)sel_list->data;
+        curr_log->unparsed_sel = strdup(buffer);
+        if (get_sel_time(curr_log, job_info->start_time))
+            continue;
+        if (get_sel_element(curr_log, &curr_log->sel_msg_type, 3))
+            continue;
+        if (get_sel_element(curr_log, &curr_log->sel_msg, 4))
+            continue;
+        if (get_sel_assert(curr_log))
+            continue;
+        sel_list = add_to_list(sel_list, init_parsed_sel());
+    }
+    pclose(log_fd);
+    return (sel_list);
+}
 
 void log_parsed_sel(linked_list_t *gathered_sel)
 {
