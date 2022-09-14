@@ -108,13 +108,13 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     return (0);
 }
 
-int handle_sel_type(parsed_sel_t *curr_sel)
+int handle_sel_str(parsed_sel_t *curr_sel, int element)
 {
     int i = 0;
     int j = 0;
     int len = 0;
 
-    for (; j < 3; j++, i++)
+    for (; j < element; j++, i++)
         i += len_untill(&curr_sel->unparsed_sel[i], '|');
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
@@ -163,11 +163,11 @@ linked_list_t *gather_sel_logs
             continue;
         else
             printf("time ok, ");
-        if (handle_sel_type(curr_log))
+        if (handle_sel_str(curr_log, 3))
             continue;
         else
             printf("type ok, ");
-        if (handle_sel_msg(curr_log))
+        if (handle_sel_str(curr_log, 4))
             continue;
         else
             printf("msg ok, ");
