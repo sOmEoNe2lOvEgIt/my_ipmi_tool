@@ -127,11 +127,11 @@ linked_list_t *gather_sel(job_id_info_t *job_info)
 {
     linked_list_t *sel_list = NULL;
     parsed_sel_t *curr_log = NULL;
-    FILE *log_fd;
+    FILE *log_fd = NULL;
     char *buffer;
     size_t len = 1000;
 
-    log_fd = popen("ipmitool -U admin -P password sel list", "r");
+    log_fd = popen("ipmitool -U admin -P password sel list", "r\0");
     if (log_fd == NULL)
         return (NULL);
     sel_list = add_to_list(sel_list, init_parsed_sel);
@@ -189,9 +189,7 @@ int main (int ac, char **av)
     time_t start_time = 0;
 
     job_info->start_time = start_time;
-    printf("start gathering sel\n");
     sel_list = gather_sel(job_info);
-    printf("end gathering sel\n");
     if (sel_list == NULL)
         return (1);
     // log_parsed_sel(sel_list);
