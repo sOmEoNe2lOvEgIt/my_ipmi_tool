@@ -90,7 +90,6 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     sel_time->tm_year = atoi(&curr_sel->unparsed_sel[i]);
-    printf("date o.k\n");
     i += len_untill(&curr_sel->unparsed_sel[i], '|') + 2;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
@@ -103,7 +102,6 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     sel_time->tm_sec = atoi(&curr_sel->unparsed_sel[i]);
-    printf("time o.k\n");
     sprintf(time_str, "[%d-%02d-%02dT%02d:%02d:%02d]", sel_time->tm_year, sel_time->tm_mon, sel_time->tm_mday, sel_time->tm_hour, sel_time->tm_min, sel_time->tm_sec);
     curr_sel->sel_time_str = strdup(time_str);
     free(sel_time);
@@ -162,19 +160,19 @@ linked_list_t *gather_sel_logs
         curr_log = (parsed_sel_t *)sel_list->data;
         curr_log->unparsed_sel = strdup(buffer);
         printf("%s\n\n", curr_log->unparsed_sel);
-        if (!handle_sel_time(curr_log, job_info->start_time))
+        if (handle_sel_time(curr_log, job_info->start_time))
             continue;
         else
             printf("time ok\n");
-        if (!handle_sel_type(curr_log))
+        if (handle_sel_type(curr_log))
             continue;
         else
             printf("type ok\n");
-        if (!handle_sel_msg(curr_log))
+        if (handle_sel_msg(curr_log))
             continue;
         else
             printf("msg ok\n");
-        if (!handle_sel_assert(curr_log))
+        if (handle_sel_assert(curr_log))
             continue;
         else
             printf("assert ok\n");
