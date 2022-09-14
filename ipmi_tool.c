@@ -136,6 +136,7 @@ int handle_sel_msg(parsed_sel_t *curr_sel)
     for (; curr_sel->unparsed_sel[i] != '|' && curr_sel->unparsed_sel[i] != '\0'; i++, len++);
     len --;
     curr_sel->sel_msg = strndup(&curr_sel->unparsed_sel[i - len], len);
+    curr_sel->sel_msg[len] = '\0';
     return (0);
 }
 
