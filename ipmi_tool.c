@@ -172,6 +172,24 @@ void log_parsed_sel(linked_list_t *gathered_sel)
 	}
 }
 
+void free_sel_list(linked_list_t *sel_list)
+{
+    parsed_sel_t *curr_sel = NULL;
+    linked_list_t *next_list = NULL;
+
+    if (sel_list == NULL || sel_list->data == NULL)
+        return;
+    while (sel_list != NULL) {
+        next_list = sel_list->next;
+        if ((parsed_sel_t *)sel_list->data != NULL) {
+            curr_sel = (parsed_sel_t *)sel_list->data;
+            free_parsed_sel(curr_sel);
+        }
+        free(sel_list);
+        sel_list = next_list;
+    }
+}
+
 int main (int ac, char **av)
 {
     job_id_info_t *job_info = malloc(sizeof(job_id_info_t));
@@ -183,5 +201,6 @@ int main (int ac, char **av)
     if (sel_list == NULL)
         return (1);
     log_parsed_sel(sel_list);
+    free_sel_list(sel_list);
     return (0);
 }
