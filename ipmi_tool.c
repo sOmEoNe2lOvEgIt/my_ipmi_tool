@@ -90,6 +90,7 @@ int handle_sel_time(parsed_sel_t *curr_sel, time_t start_time)
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
     sel_time->tm_year = atoi(&curr_sel->unparsed_sel[i]);
+    printf("date o.k");
     i += len_untill(&curr_sel->unparsed_sel[i], '|') + 2;
     if (curr_sel->unparsed_sel[i] == '\0')
         return (1);
